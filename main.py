@@ -5,19 +5,25 @@ width = 700
 height = 700
 cellSize = 100
 
+turnToPlay = "Computer"
+computerTurnCounter = 0
+playerTurnCounter = 0
 turn = 0
+
+playerSelectedPieceArr = []
+computerSelectedPieceArr = []
 
 run = True
 selectedPiece = None
 
 board = [
-    [1,0,0,0,0,0,2],
     [0,0,0,0,0,0,0],
-    [1,0,0,0,0,0,2],
     [0,0,0,0,0,0,0],
-    [2,0,0,0,0,0,1],
+    [0,0,0,0,2,0,0],
+    [0,1,0,0,0,0,0],
     [0,0,0,0,0,0,0],
-    [2,0,0,0,0,0,1]
+    [0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0]
     ]
 
 def drawBoard():
@@ -64,6 +70,10 @@ def MoveSelectedPiece(selectedPiece, mouseX, mouseY):
     board[row][column] = 0
     board[mouseY][mouseX] = 2
 
+    selectedPieceNewPos = mouseY, mouseX
+
+    playerSelectedPieceArr.append(selectedPieceNewPos)
+    
     for i, row in enumerate(board):
         for j, val in enumerate(row):
             if(val == 3):
@@ -251,12 +261,103 @@ def checkCapture():
         board[row][column] = 0
 
 
+def evaluateBoard(board):
+    eval = 0
+
+    for row in board:
+        for val in row:
+            if val == 1:
+                eval += 1
+            elif val == 2:
+                eval -= 1
+
+    return eval
+
+
+def findAllPossibleMoves(player):
+
+    possibleMoves = []
+    pieces = []
+
+    for i, row in enumerate(board):
+        for j, val in enumerate(row):
+            if val == 1 and player == "Computer":
+                pieces.append(board[i][j])
+            elif val == 2 and player == "Player":
+                pieces.append(board[i][j])
+
+
+    for piece in pieces:
+        row, column = piece
+    
+        if 7 > row + 1 >= 0 and board[row+1][column] != 1 and board[row+1][column] != 2:
+            possibleMoves.append((row+1, column))
+        if 0 <= row - 1 < 7 and board[row-1][column] != 1 and board[row-1][column] != 2:
+            possibleMoves.append((row-1, column))
+        if 7 > column + 1 >= 0 and board[row][column+1] != 1 and board[row][column+1] != 2:
+            possibleMoves.append((row, column+1))
+        if 0 <= column - 1 < 7 and board[row][column-1] != 1 and board[row][column-1] != 2:
+            possibleMoves.append((row, column-1))
+
+
+def makeMove(piece, move, player):
+    row, column = piece
+    targetRow, targetColumn = move
+
+    if player == "Computer":
+        board[targetRow][targetColumn] = 1
+    elif player == "Player":
+        board[targetRow][targetColumn] = 2
+
+    board[row][column] = 0
+
+    return piece
+
+
+def undoMove(piece, move, player):
+    row, column = piece
+    playedRow, playedColumn = move
+
+    if player == "Computer":
+        board[row][column] = 1
+    elif player == "Player":
+        board[row][column] = 2
+
+    board[playedRow][playedColumn] = 0
+    
+
+def checkWinner():
+
+    computerPieces = 0
+    playerPieces = 0
+
+    for row in board:
+        for val in row:
+            if val == 1:
+                computerPieces += 1
+            elif val == 2:
+                playerPieces += 1
+
+    if computerPieces == 0:
+        return "Player"
+    
+    if playerPieces == 0:
+        return "Computer"
+
+    if turn == 50:
+        if computerPieces == playerPieces:
+            return "Draw"
+        elif computerPieces > playerPieces:
+            return "Computer"
+        elif computerPieces < playerPieces:
+            return "Player"
+
 def computerMove():
 
     pieces = []
     possibleMoves = []
 
-    for i, row in enumerate(board):
+    '''for i, row in enumerate(board):
         for j, val in enumerate(row):
             if board[i][j] == 1:
                 pieces.append((i,j))
@@ -265,13 +366,13 @@ def computerMove():
 
     row, column = selectedPiece
 
-    if 7 > row + 1 >= 0 and board[row+1][column] != 1 and board[row+1][column] != 1 and board[row+1][column] != 2:
+    if 7 > row + 1 >= 0 and board[row+1][column] != 1 and board[row+1][column] != 2:
         possibleMoves.append((row+1, column))
-    if 0 <= row - 1 < 7 and board[row-1][column] != 1 and board[row-1][column] != 1 and board[row-1][column] != 2:
+    if 0 <= row - 1 < 7 and board[row-1][column] != 1 and board[row-1][column] != 2:
         possibleMoves.append((row-1, column))
-    if 7 > column + 1 >= 0 and board[row][column+1] != 1 and board[row][column+1] != 1 and board[row][column+1] != 2:
+    if 7 > column + 1 >= 0 and board[row][column+1] != 1 and board[row][column+1] != 2:
         possibleMoves.append((row, column+1))
-    if 0 <= column - 1 < 7 and board[row][column-1] != 1 and board[row][column-1] != 1 and board[row][column-1] != 2:
+    if 0 <= column - 1 < 7 and board[row][column-1] != 1 and board[row][column-1] != 2:
         possibleMoves.append((row, column-1))
 
 
@@ -285,6 +386,14 @@ def computerMove():
 
     print(f"Played the move {selectedMove}")
 
+    global computerTurnCounter
+
+    computerTurnCounter += 1'''
+
+    if (len(pieces) > 1 and computerTurnCounter != 2):
+        computerMove()
+
+
 
 pygame.init()
 screen = pygame.display.set_mode((width,height))
@@ -294,7 +403,7 @@ clock = pygame.time.Clock()
 backSurface = pygame.Surface((width, height))
 
 
-while run:
+while turn != 50:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -304,8 +413,14 @@ while run:
             mouseX = mouseX // 100
             mouseY = mouseY // 100
             if board[mouseY][mouseX] == 2:
-                selectedPiece = mouseY, mouseX
 
+                if len(playerSelectedPieceArr) != 0:
+                    for piece in playerSelectedPieceArr:
+                        if piece != (mouseY, mouseX):
+                            selectedPiece = mouseY, mouseX
+                else:
+                    selectedPiece = mouseY, mouseX
+                    
                 for i, row in enumerate(board):
                     for j, val in enumerate(row):
                         if(val == 3):
@@ -313,20 +428,40 @@ while run:
 
             elif board[mouseY][mouseX] == 3:
 
+                circleCount = 0
+
+                for i, row in enumerate(board):
+                    for j, val in enumerate(row):
+                        if board[i][j] == 2:
+                            circleCount += 1
+
                 MoveSelectedPiece(selectedPiece, mouseX, mouseY)
                 checkCapture()
-                turn += 1
+                playerTurnCounter += 1
+
+                if playerTurnCounter == 2 or circleCount < 2:
+                    playerTurnCounter = 0
+                    turn += 1
+                    turnToPlay = "Computer"
+                    playerSelectedPieceArr.clear()
+                    
                 
-                computerMove()
-                checkCapture()
-                turn += 1
+                if turnToPlay == "Computer":
+                    computerMove()
+                    checkCapture()
+                    turn += 1
+                    computerTurnCounter = 0
+                    turnToPlay = "Player"
+
 
                 selectedPiece = None
 
         elif event.type == pygame.MOUSEBUTTONDOWN and turn == 0:
             computerMove()
             checkCapture()
+            computerTurnCounter = 0
             turn += 1
+            turnToPlay = "Player"
 
            
 
@@ -341,3 +476,4 @@ while run:
 
     screen.blit(backSurface, (0,0))
     pygame.display.update()
+    #clock.tick(60)
