@@ -1,6 +1,7 @@
 import pygame
 import random
 import math
+import time
 
 width = 700
 height = 700
@@ -398,7 +399,7 @@ def checkWinner():
     return False
 
 
-def minimax(depth, isMaximizingPlayer, treeDepth = 0):  # Maximizing player is ai
+def minimax(depth, isMaximizingPlayer, alpha, beta, treeDepth = 0):  # Maximizing player is ai
 
     if depth == 0 or checkWinner() != False:
         return evaluateBoard()
@@ -419,7 +420,7 @@ def minimax(depth, isMaximizingPlayer, treeDepth = 0):  # Maximizing player is a
             #if deletedPieces:
                 #print(f"DeletedPieces: {deletedPieces}")
 
-            eval = minimax(depth - 1, False, treeDepth + 1)
+            eval = minimax(depth - 1, False, alpha, beta, treeDepth + 1)
 
             #print(eval)
 
@@ -441,6 +442,12 @@ def minimax(depth, isMaximizingPlayer, treeDepth = 0):  # Maximizing player is a
             elif eval > maxEval:
                 maxEval = eval
 
+
+            alpha = max(alpha, maxEval)
+
+            if beta <= alpha:
+                break
+
         return maxEval
     
     else:
@@ -458,12 +465,16 @@ def minimax(depth, isMaximizingPlayer, treeDepth = 0):  # Maximizing player is a
             #if deletedPieces:
                 #print(f"DeletedPieces: {deletedPieces}")
 
-            eval = minimax(depth - 1, True, treeDepth + 1)
+            eval = minimax(depth - 1, True, alpha, beta, treeDepth + 1)
             #print(eval)
 
             undoCapture(deletedPieces)
             undoMove(piece, (row,column), "Player")
             minEval = min(minEval, eval)
+            beta = min(minEval, beta)
+
+            if beta <= alpha:
+                break
 
         return minEval
 
@@ -472,7 +483,11 @@ def computerMove():
     
     global bestMove
 
-    res = minimax(5, True)
+    start = time.process_time()
+
+    res = minimax(5, True, -math.inf, math.inf)
+
+    print("Time it took to calculate: ", time.process_time() - start)
 
     if bestMove:    
         makeMove(bestMove[0], (bestMove[1], bestMove[2]), "Computer")
