@@ -1,5 +1,4 @@
 import pygame
-import random
 import math
 import time
 
@@ -8,8 +7,6 @@ height = 700
 cellSize = 100
 
 turnToPlay = "Computer"
-#computerTurnCounter = 0
-#playerTurnCounter = 0
 turn = 0
 
 playerSelectedPieceArr = []
@@ -388,7 +385,7 @@ def checkWinner():
     if playerPieces == 0:
         return "Computer"
 
-    if turn == 50:
+    if turn >= 50:
         if computerPieces == playerPieces:
             return "Draw"
         elif computerPieces > playerPieces:
@@ -406,39 +403,23 @@ def minimax(depth, isMaximizingPlayer, alpha, beta, treeDepth = 0):  # Maximizin
 
     if isMaximizingPlayer:
         maxEval = -math.inf
-        #temp = -math.inf
         possibleMoves = findAllPossibleMoves("Computer")
 
         for piece, row, column in possibleMoves:
 
-            #print(board)
-
             makeMove(piece, (row,column), "Computer")
-            #print(f"Computer made move: ({piece}), {row}, {column}")
             deletedPieces = checkCapture()
-
-            #if deletedPieces:
-                #print(f"DeletedPieces: {deletedPieces}")
 
             eval = minimax(depth - 1, False, alpha, beta, treeDepth + 1)
 
-            #print(eval)
-
             undoCapture(deletedPieces)
             undoMove(piece, (row,column), "Computer")
-
-            #maxEval = max(maxEval, eval)
-
-            #if deletedPieces:
-                #print(f"Board after undoes: {board}")
 
             if treeDepth == 0 and eval > maxEval:
                 maxEval = eval
                 global bestMove
                 bestMove = (piece, row, column)
-                #print(f"Best Move: {bestMove}")
-                #temp = maxEval
-                
+
             elif eval > maxEval:
                 maxEval = eval
 
@@ -455,18 +436,11 @@ def minimax(depth, isMaximizingPlayer, alpha, beta, treeDepth = 0):  # Maximizin
         possibleMoves = findAllPossibleMoves("Player")
 
         for piece, row, column in possibleMoves:
-
-            #print(board)
             
             makeMove(piece, (row,column), "Player")
-            #print(f"Player made move: ({piece}), {row}, {column}")
             deletedPieces = checkCapture()
 
-            #if deletedPieces:
-                #print(f"DeletedPieces: {deletedPieces}")
-
             eval = minimax(depth - 1, True, alpha, beta, treeDepth + 1)
-            #print(eval)
 
             undoCapture(deletedPieces)
             undoMove(piece, (row,column), "Player")
@@ -494,16 +468,8 @@ def computerMove():
     else:
         print("No valid move")
 
-    print("Best Value: ", res)
-    print("------------------------")
 
     bestMove = None
-    
-    '''global computerTurnCounter
-    computerTurnCounter += 1
-
-    if (computerTurnCounter != 2):
-        computerMove()'''
 
 
 
@@ -540,19 +506,9 @@ while turn <= 50:
 
             elif board[mouseY][mouseX] == 3:
 
-                '''circleCount = 0
-
-                for i, row in enumerate(board):
-                    for j, val in enumerate(row):
-                        if board[i][j] == 2:
-                            circleCount += 1'''
-
                 MoveSelectedPiece(selectedPiece, mouseX, mouseY)
                 checkCapture()
-                #playerTurnCounter += 1
 
-                #if playerTurnCounter == 2 or circleCount < 2:
-                #playerTurnCounter = 0
                 turn += 1
                 turnToPlay = "Computer"
                 playerSelectedPieceArr.clear()
@@ -571,7 +527,6 @@ while turn <= 50:
         elif event.type == pygame.MOUSEBUTTONDOWN and turn == 0:
             computerMove()
             checkCapture()
-            #computerTurnCounter = 0
             turn += 1
             turnToPlay = "Player"
 
@@ -588,8 +543,13 @@ while turn <= 50:
 
     screen.blit(backSurface, (0,0))
     pygame.display.update()
-    #clock.tick(60)
-
 
 
 print("Game over ", turn)
+
+winner = checkWinner()
+
+if winner != "Draw":
+    print("Winner of the game is", winner)
+else:
+    print("Draw")
