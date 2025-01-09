@@ -4,7 +4,7 @@ This is my Introduction to Artifical Intelligence term project. It is a simple b
 For creating AI, I used minimax algorithm with alpha - beta pruning and for GUI used pygame.
 You can check the game rules below.
 
-!Note that you need pygame for running the project. [text](https://www.pygame.org/wiki/GettingStarted)
+!Note that you need pygame for running the project. [Pygame Site](https://www.pygame.org/wiki/GettingStarted)
 
 1.	The Rules of the Game
 The board size is 7*7.
