@@ -49,8 +49,11 @@ Figure 6. Capturing Pieces
 
 4.	Game End
 When both players do not have any pieces: It is Draw. When both players have only a single piece: It is Draw.
+
 When the player has some pieces, but the opponent player does not have any pieces: The player wins.
+
 When the player has no pieces, but the opponent player has some pieces: The player losses.
+
 After 50 moves in total:
 If both players have same number of pieces: It is Draw. If the player has more pieces: The player wins.
 Else: The player losses.
