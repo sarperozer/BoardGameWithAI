@@ -10,14 +10,13 @@ turnToPlay = "Computer"
 turn = 0
 
 playerSelectedPieceArr = []
-computerSelectedPieceArr = []
 
 run = True
 selectedPiece = None
 
 bestMove = None
 
-board = [
+board = [                 #1's are AI's pieces and 2s are Player's
     [1,0,0,0,0,0,2],
     [0,0,0,0,0,0,0],
     [1,0,0,0,0,0,2],
@@ -42,21 +41,13 @@ def drawPieces():
                 pygame.draw.circle(backSurface, 'red', (j * cellSize + 50, i * cellSize + 50), 25)
 
 
-def findPossibleMoves(selectedPiece):
+def findPossibleMoves(selectedPiece):   #Finds the possible moves for selected piece
     row, column = selectedPiece[0], selectedPiece[1]
-    possibleMoves = []
-    
-    if 7 > row + 1 >= 0 and board[row+1][column] != 1 and board[row+1][column] != 2:
-        possibleMoves.append((row+1, column))
-    if 0 <= row - 1 < 7 and board[row-1][column] != 1 and board[row-1][column] != 2:
-        possibleMoves.append((row-1, column))
-    if 7 > column + 1 >= 0 and board[row][column+1] != 1 and board[row][column+1] != 2:
-        possibleMoves.append((row, column+1))
-    if 0 <= column - 1 < 7 and board[row][column-1] != 1 and board[row][column-1] != 2:
-        possibleMoves.append((row, column-1))
+    possibleMoves = findAllPossibleMoves("Player")
 
-    for row, column in possibleMoves:
-        board[row][column] = 3
+    for piece, row, column in possibleMoves:
+        if piece == selectedPiece:
+            board[row][column] = 3
 
 
 def drawPossibleMoves():
@@ -81,7 +72,7 @@ def MoveSelectedPiece(selectedPiece, mouseX, mouseY):
                 board[i][j] = 0
 
 
-def checkCapture():
+def checkCapture(): #Checks all four directions of the pieces
 
     deletedPieces = []
 
@@ -111,7 +102,6 @@ def checkCapture():
 
                 if (i - newPositionColumn) - 1 == count:
                     for k in range(newPositionColumn + 1, i):
-                        #board[newPositionRow][k] = 0
                         deletedPieces.append((newPositionRow, k, 1))
 
                 count = 0
@@ -151,11 +141,10 @@ def checkCapture():
 
                 if (newPositionRow - i) - 1 == count:
                     for k in range(newPositionRow - 1, i, -1):
-                        #board[k][newPositionColumn] = 0
                         deletedPieces.append((k, newPositionColumn, 1))
                 count = 0
 
-                #Checking down of the piece
+                #Checking bottom of the piece
                 for i in range(newPositionRow + 1, 8):
                     if i != 7:
                         if board[i][newPositionColumn] == 2:
@@ -237,7 +226,7 @@ def checkCapture():
                         deletedPieces.append((k, newPositionColumn, 2))
                 count = 0
 
-                #Checking down of the piece
+                #Checking bottom of the piece
                 for i in range(newPositionRow + 1, 8):
                     if i != 7:
                         if board[i][newPositionColumn] == 1:
@@ -258,7 +247,7 @@ def checkCapture():
 
 
 
-    for row, column, deletedPiece in deletedPieces:
+    for row, column, deletedPiece in deletedPieces:   #Deleting the captured pieces
         board[row][column] = 0
 
 
@@ -269,45 +258,6 @@ def undoCapture(deletedPieces):
 
     for row, column,deletedPiece in deletedPieces:
         board[row][column] = deletedPiece
-
-
-def evaluateBoard():
-    eval = 0
-
-    for i, row in enumerate(board):
-        for j, val in enumerate(row):
-
-            if i == 0:
-                if val == 1:
-                    eval -= 1
-                elif val == 2:
-                    eval += 1
-
-            if i == 6:
-                if val == 1:
-                    eval -= 1
-                elif val == 2:
-                    eval += 1
-
-            if j == 0:
-                if val == 1:
-                    eval -= 1
-                elif val == 2:
-                    eval += 1
-
-            if j == 6:
-                if val == 1:
-                    eval -= 1
-                elif val == 2:
-                    eval += 1
-
-            if val == 1:
-                eval += 3
-            elif val == 2:
-                eval -= 3
-
-
-    return eval
 
 
 def findAllPossibleMoves(player):
@@ -395,6 +345,44 @@ def checkWinner():
 
     return False
 
+def evaluateBoard():
+    eval = 0
+
+    for i, row in enumerate(board):
+        for j, val in enumerate(row):
+
+            if i == 0:
+                if val == 1:
+                    eval -= 1
+                elif val == 2:
+                    eval += 1
+
+            if i == 6:
+                if val == 1:
+                    eval -= 1
+                elif val == 2:
+                    eval += 1
+
+            if j == 0:
+                if val == 1:
+                    eval -= 1
+                elif val == 2:
+                    eval += 1
+
+            if j == 6:
+                if val == 1:
+                    eval -= 1
+                elif val == 2:
+                    eval += 1
+
+            if val == 1:
+                eval += 3
+            elif val == 2:
+                eval -= 3
+
+
+    return eval
+
 
 def minimax(depth, isMaximizingPlayer, alpha, beta, treeDepth = 0):  # Maximizing player is ai
 
@@ -459,7 +447,7 @@ def computerMove():
 
     start = time.process_time()
 
-    res = minimax(5, True, -math.inf, math.inf)
+    minimax(5, True, -math.inf, math.inf)
 
     print("Time it took to calculate: ", time.process_time() - start)
 
