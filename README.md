@@ -13,6 +13,7 @@ Every player has four pieces, and the game starts with the board configuration, 
 When the game starts, Player 1 moves first.
 
 ![image1](images/1.jpg)
+
 Figure 1: Initial board configuration. 
 
 2.	The Rules of the Moves
@@ -24,21 +25,26 @@ If the player has only one piece, the player should make only a single move.
 If the player’s single piece or group of pieces are between the wall and the opponent piece, they are captured (Figure 2, Figure 3).
 
 ![image2](images/2.jpg)
+
 Figure 2: Capturing pieces.
 
 If the player’s single piece or group of pieces are between two opponent pieces, it is captured (Figure 4, Figure 5).
 If both player’s pieces are between two opponent pieces, all of these pieces are captured (Figure 6).
  
 ![image3](images/3.jpg)
+
 Figure 3: Capturing pieces.
 
 ![image4](images/4.jpg)
+
 Figure 4: Capturing pieces.
  
 ![image5](images/5.jpg)
+
 Figure 5. Capturing Pieces
 
 ![image6](images/6.jpg)
+
 Figure 6. Capturing Pieces
 
 4.	Game End
