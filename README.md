@@ -36,12 +36,10 @@ When the game starts, Player 1 moves first.
 
 Figure 1: Initial board configuration. 
 
-## The Rules of the Moves
+### The Rules of the Moves
 The pieces can move in both horizontal and vertical directions. Diagonal moves are not allowed.
-If the player has more than one piece, the player should make two subsequent moves with different pieces.
-If the player has only one piece, the player should make only a single move.
 
-## Capturing Pieces
+### Capturing Pieces
 If the player’s single piece or group of pieces are between the wall and the opponent piece, they are captured (Figure 2, Figure 3).
 
 ![image2](images/2.jpg)
