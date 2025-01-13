@@ -1,10 +1,30 @@
 # Board Game Against AI
-
+## Description
 This is my Introduction to Artifical Intelligence term project. It is a simple board game against an AI player.
 For creating AI, I used minimax algorithm with alpha - beta pruning and for GUI used pygame.
 You can check the game rules below.
 
-!Note that you need pygame for running the project. [Pygame Site](https://www.pygame.org/wiki/GettingStarted)
+## Installation
+Clone or download the repository to your local machine.
+
+## Dependencies
+The game requires the following dependencies:
+
+- Python 3
+- Pygame (for graphics and sound)
+
+You can install Pygame using pip:
+
+```bash
+pip install pygame
+```
+
+## Running the Games
+To start playing, first navigate into the folder of the game that you want to play. Then run the following command, replacing the "game" with the name of the game you want to play:
+
+```bash
+python main.py
+```
 
 ## The Rules of the Game
 The board size is 7*7.
