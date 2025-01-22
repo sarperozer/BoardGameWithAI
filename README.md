@@ -11,7 +11,7 @@ Clone or download the repository to your local machine.
 The game requires the following dependencies:
 
 - Python 3
-- Pygame (for graphics and sound)
+- Pygame
 
 You can install Pygame using pip:
 
